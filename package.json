@@ -1,22 +1,57 @@
 {
-  "name": "demo-eth-tx",
+  "name": "itx-eth-tx",
   "version": "0.1.0",
   "description": "Ethereum transaction demo scripts",
-  "main": "compile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "keywords": [
     "Ethereum",
-    "web3.js",
     "ethers.js"
   ],
-  "author": "Lucian Boca <lucian.boca@consensys.net>",
-  "license": "ISC",
+  "private": true,
   "dependencies": {
+    "@angular/animations": "~11.1.2",
+    "@angular/cdk": "^11.2.0",
+    "@angular/common": "~11.1.2",
+    "@angular/compiler": "~11.1.2",
+    "@angular/core": "~11.1.2",
+    "@angular/forms": "~11.1.2",
+    "@angular/material": "^11.2.0",
+    "@angular/platform-browser": "~11.1.2",
+    "@angular/platform-browser-dynamic": "~11.1.2",
+    "@angular/router": "~11.1.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "ethers": "^5.0.7",
+    "rxjs": "~6.6.0",
     "solc": "^0.6.12",
-    "web3": "^1.2.11"
+    "tslib": "^2.0.0",
+    "web3": "^1.2.11",
+    "zone.js": "~0.11.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1101.4",
+    "@angular/cli": "~11.1.4",
+    "@angular/compiler-cli": "~11.1.2",
+    "@types/jasmine": "~3.6.0",
+    "@types/node": "^12.11.1",
+    "codelyzer": "^6.0.0",
+    "jasmine-core": "~3.6.0",
+    "jasmine-spec-reporter": "~5.0.0",
+    "karma": "~5.2.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.0.3",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "protractor": "~7.0.0",
+    "ts-node": "~8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "~4.1.2"
   }
 }

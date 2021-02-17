@@ -1,0 +1,41 @@
+<div class="swap-container">
+  <h3>Trade tokens for Ether</h3>
+  <form>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Select token</mat-label>
+      <mat-select (ngModelChange)="tokenChange($event)" [(ngModel)]="token" name="token">
+
+        <mat-select-trigger>
+          <img class="select" src="{{token?.icon}}" alt="{{token?.name}} icon">
+          <span style="margin-left: 3rem; margin-right: 1rem">{{token?.name}}</span>
+          <span style="font-family: monospace, monospace;">{{token?.address}}</span>
+        </mat-select-trigger>
+
+        <mat-option *ngFor="let _token of tokens" [value]="_token">
+          <img class="option" src="{{_token.icon}}" alt="{{_token.name}} icon">
+          <span style="margin-right: 1rem">{{_token.name}}</span>
+          <span style="font-family: monospace, monospace;">{{_token.address}}</span>
+        </mat-option>
+
+      </mat-select>
+    </mat-form-field>
+
+    <div class="info" *ngIf="token?.name">
+      <p class="token-balance" [class.loading]="!balance">Your {{token.name}} balance: {{balance}}</p>
+      <button *ngIf="balance" mat-button (click)="tradeAmount = balance">Max</button>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Trade amount</mat-label>
+      <input matInput (ngModelChange)="amountChange($event)" [(ngModel)]="tradeAmount" name="tradeAmount"
+        placeholder="0.0">
+    </mat-form-field>
+
+    <div class="info" *ngIf="tradeAmount">
+      <p class="token-balance" [class.loading]="!expectedOutput">You will receive approximately {{expectedOutput}} <span
+          *ngIf="expectedOutput">ETH</span></p>
+    </div>
+
+  </form>
+</div>

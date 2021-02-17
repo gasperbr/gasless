@@ -1,0 +1,45 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: Roboto,
+  "Helvetica Neue", sans-serif;
+  background-color: #303030;
+  color: white;
+}
+
+.mat-tab-labels {
+  justify-content: center;
+}
+
+.mat-option-text {
+  display: flex!important;
+  align-items: center;
+}
+
+.mat-tab-body-content {
+  overflow: hidden!important;
+}
+
+@keyframes dots {
+  0%, 20% {
+    color: rgba(0,0,0,0);
+    text-shadow:
+      .25em 0 0 rgba(0,0,0,0),
+      .5em 0 0 rgba(0,0,0,0);}
+  40% {
+    color: white;
+    text-shadow:
+      .25em 0 0 rgba(0,0,0,0),
+      .5em 0 0 rgba(0,0,0,0);}
+  60% {
+    text-shadow:
+      .25em 0 0 white,
+      .5em 0 0 rgba(0,0,0,0);}
+  80%, 100% {
+    text-shadow:
+      .25em 0 0 white,
+      .5em 0 0 white;}}

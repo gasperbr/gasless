@@ -1,0 +1,43 @@
+.swap-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  mat-form-field,
+  form {
+    width: 100%;
+  }
+}
+
+mat-select-trigger {
+  display: flex;
+  align-items: center;
+}
+
+img {
+  &.select {
+    position: absolute;
+    width: 1.5rem;
+    margin-right: 1rem;
+  }
+  &.option {
+    width: 1.5rem;
+    margin-right: 1rem;
+  }
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  min-height: 2rem;
+}
+
+.token-balance {
+  margin-bottom: 0;
+  &.loading:after {
+    content: ' .';
+    animation: dots 1s steps(5, end) infinite;
+  }
+}

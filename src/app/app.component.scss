@@ -1,0 +1,19 @@
+nav {
+  display: flex;
+  min-height: 4rem;
+  margin: 0 1rem;
+  align-items: center;
+
+  a {
+    margin-right: 1rem;
+    color: white;
+    text-decoration: none;
+    &.link-active {
+      text-decoration: underline;
+    }
+  }
+
+  button {
+    margin-left: auto;
+  }
+}

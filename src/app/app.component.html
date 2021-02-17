@@ -1,0 +1,11 @@
+<nav>
+  <a mat-button routerLink="/" routerLinkActive="link-active" [routerLinkActiveOptions]="{ exact: true }">
+    Make transaction</a>
+  <a mat-button routerLink="/about" routerLinkActive="link-active">About</a>
+  <button mat-button color="accent" (click)="connectMetamask()">
+    <span *ngIf="!ethereumService.$address.value">Connect Metamask</span>
+    <span *ngIf="!!ethereumService.$address.value">{{(ethereumService.$address | async) | address}}
+      ({{ethereumService.network?.name | titlecase}})</span>
+  </button>
+</nav>
+<router-outlet></router-outlet>
