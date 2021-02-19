@@ -12,11 +12,11 @@ const routes: Routes = [
     path: '',
     component: TransactionComponent
   },
-  /* {
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'
-  } */
+  }
 ];
 
 @NgModule({
