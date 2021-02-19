@@ -3,6 +3,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Contract, ethers } from "ethers";
 import { BehaviorSubject } from 'rxjs';
 import { keccak256, defaultAbiCoder, toUtf8Bytes, solidityPack } from 'ethers/lib/utils'
+import { ChainId, Token, TokenAmount, Pair } from '@uniswap/sdk'
+import { TokenInfo } from './token-list.service';
+import 'axios';
+import axios from 'axios';
 
 declare global {
   interface Window { ethereum: any; }
@@ -96,6 +100,15 @@ export class EthereumService {
       return "0." + ("0".repeat(decimals - len)) + strBalance;
     }
 
+  }
+
+  async calculateTradeOutput(_token: TokenInfo, amount: string): Promise<string> {
+    axios.get('http://localhost:3000/trade-output').then(console.log);
+    /*   const token = new Token(ChainId.RINKEBY, _token.address, _token.decimals, 'HOT', 'Caffeine')
+      const weth = new Token(ChainId.RINKEBY, '0xDeCAf00000000000000000000000000000000000', 18, 'NOT', 'Caffeine')
+
+      const pair = new Pair(new TokenAmount(HOT, '2000000000000000000'), new TokenAmount(NOT, '1000000000000000000')) */
+    return "0.0"
   }
 
 

@@ -1,7 +1,7 @@
 {
-  "name": "itx-eth-tx",
+  "name": "itx-eth-gasless",
   "version": "0.1.0",
-  "description": "Ethereum transaction demo scripts",
+  "description": "Make ethereum transactinos with no starting gas",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -30,6 +30,7 @@
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "ethers": "^5.0.7",
+    "express": "^4.17.1",
     "rxjs": "~6.6.0",
     "solc": "^0.6.12",
     "tslib": "^2.0.0",

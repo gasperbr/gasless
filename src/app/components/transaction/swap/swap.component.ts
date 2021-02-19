@@ -60,7 +60,7 @@ export class SwapComponent implements OnInit {
 
     this.tradeAmountActual = intAmount.toString(10)
     this.expectedOutput = undefined;
-    // this.expectedOutput = await this.tokenListService.calculateTradeOutput(this.token.address, _tradeAmount.replace('.', ''));
+    this.expectedOutput = await this.ethereumService.calculateTradeOutput(this.token, intAmount.toString(10));
   }
 
   getPaddedAmount(amount: string, decimals: number) {
