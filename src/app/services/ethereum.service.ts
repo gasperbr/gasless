@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Contract, ethers } from "ethers";
 import { BehaviorSubject } from 'rxjs';
-import { keccak256, defaultAbiCoder, toUtf8Bytes, solidityPack } from 'ethers/lib/utils'
-import { ChainId, Token, TokenAmount, Pair } from '@uniswap/sdk'
+import { erc20abi } from './abis';
 import { TokenInfo } from './token-list.service';
-import 'axios';
 import axios from 'axios';
 
 declare global {
@@ -27,8 +25,6 @@ export class EthereumService {
   get address() { return this.$address.value };
 
   network: ethers.providers.Network;
-
-  erc20abi = [{ "inputs": [{ "internalType": "uint256", "name": "chainId_", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "src", "type": "address" }, { "indexed": true, "internalType": "address", "name": "guy", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": true, "inputs": [{ "indexed": true, "internalType": "bytes4", "name": "sig", "type": "bytes4" }, { "indexed": true, "internalType": "address", "name": "usr", "type": "address" }, { "indexed": true, "internalType": "bytes32", "name": "arg1", "type": "bytes32" }, { "indexed": true, "internalType": "bytes32", "name": "arg2", "type": "bytes32" }, { "indexed": false, "internalType": "bytes", "name": "data", "type": "bytes" }], "name": "LogNote", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "src", "type": "address" }, { "indexed": true, "internalType": "address", "name": "dst", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "constant": true, "inputs": [], "name": "DOMAIN_SEPARATOR", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "PERMIT_TYPEHASH", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "internalType": "address", "name": "", "type": "address" }, { "internalType": "address", "name": "", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "burn", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "guy", "type": "address" }], "name": "deny", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "mint", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "src", "type": "address" }, { "internalType": "address", "name": "dst", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "move", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "nonces", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "nonce", "type": "uint256" }, { "internalType": "uint256", "name": "expiry", "type": "uint256" }, { "internalType": "bool", "name": "allowed", "type": "bool" }, { "internalType": "uint8", "name": "v", "type": "uint8" }, { "internalType": "bytes32", "name": "r", "type": "bytes32" }, { "internalType": "bytes32", "name": "s", "type": "bytes32" }], "name": "permit", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "pull", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "push", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "guy", "type": "address" }], "name": "rely", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "dst", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "src", "type": "address" }, { "internalType": "address", "name": "dst", "type": "address" }, { "internalType": "uint256", "name": "wad", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "version", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "wards", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }]
 
   constructor(
     private snackBar: MatSnackBar
@@ -89,7 +85,7 @@ export class EthereumService {
       return undefined;
     }
 
-    const contract = new Contract(tokenAddress, this.erc20abi, this.provider);
+    const contract = new Contract(tokenAddress, erc20abi, this.provider);
     const balance = await contract.balanceOf(address);
     const strBalance = balance.toString();
     const len = strBalance.length;
@@ -102,40 +98,40 @@ export class EthereumService {
 
   }
 
-  async calculateTradeOutput(_token: TokenInfo, amount: string): Promise<string> {
-    axios.get('http://localhost:3000/trade-output').then(console.log);
-    /*   const token = new Token(ChainId.RINKEBY, _token.address, _token.decimals, 'HOT', 'Caffeine')
-      const weth = new Token(ChainId.RINKEBY, '0xDeCAf00000000000000000000000000000000000', 18, 'NOT', 'Caffeine')
-
-      const pair = new Pair(new TokenAmount(HOT, '2000000000000000000'), new TokenAmount(NOT, '1000000000000000000')) */
-    return "0.0"
+  async calculateTradeOutput(_token: TokenInfo, amount: string): Promise<{ gasCost: string, ethOutput: string, estimate: string } | string> {
+    const baseUrl = `${window.location.protocol}//${window.location.host}/api/estimate-output?`;
+    let data;
+    await axios.get(baseUrl + `tokenAddress=${_token.address}&tokenAmount=${amount}&decimals=${_token.decimals}`).then(res => {
+      data = res.data
+    }).catch(e => {
+      this.snackBar.open("An error occured.", ':(')
+    });
+    return data;
   }
 
 
-  async sendTx(tokenAddr = "0x8b22f85d0c844cf793690f6d9dfe9f11ddb35449", amount) {
+  async sendTx(_token: TokenInfo, amount) {
 
     const token = new ethers.Contract(
-      tokenAddr,
-      this.erc20abi/* Uni */,
-      // erc20abi,
+      _token.address,
+      erc20abi,
       this.provider
     );
 
     const nonce = await token.nonces(this.address).then(nonce => nonce.toHexString());
-    console.log('nonce ', nonce)
 
     const EIP712Domain = [
       { name: 'name', type: 'string' },
-      { name: 'version', type: 'string' },
+     // { name: 'version', type: 'string' },
       { name: 'chainId', type: 'uint256' },
       { name: 'verifyingContract', type: 'address' }
     ]
 
     const domain = {
-      name: 'Uniswap V2',
-      version: '1',
+      name: 'Uniswap',
+      // version: '1',
       chainId: 4,
-      verifyingContract: "0x8b22f85d0c844cf793690f6d9dfe9f11ddb35449" // univ2
+      verifyingContract: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
     }
 
     const Permit = [
@@ -148,20 +144,20 @@ export class EthereumService {
 
     const message = {
       owner: "0x0Cc7090D567f902F50cB5621a7d6A59874364bA1",
-      spender: "0x523a7185F670f792eCCD629f0375D2e51D23A20b",
-      value: "100",
+      spender: "0x215A5a84df05120132bac290BCaB929e53d67FB4",
+      value: amount,
       nonce,
-      deadline: 1713353740
+      deadline: Math.round((new Date().getTime() / 1000) + 86400)
     }
 
-    console.log(this.address);
+    console.log(message.deadline);
 
     const data = JSON.stringify({
       domain,
       primaryType: 'Permit',
       types: {
-        EIP712Domain,
-        Permit
+        EIP712Domain: _token.EIP712Domain,
+        Permit: _token.Permit
       },
       message
     });

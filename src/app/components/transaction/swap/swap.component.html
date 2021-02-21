@@ -28,15 +28,19 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Trade amount</mat-label>
-      <input matInput (ngModelChange)="amountChange($event)" [(ngModel)]="tradeAmount" name="tradeAmount"
+      <input matInput [(ngModel)]="tradeAmount" name="tradeAmount" (ngModelChange)="amountChange($event)"
         placeholder="0.0">
     </mat-form-field>
     <p style="color: #ffcc80" *ngIf="!tradeAmountValid">Please enter a valid number.</p>
     <p style="color: #ffcc80" *ngIf="tooMuch">Amount exceeds balance.</p>
 
-    <div class="info" *ngIf="tradeAmount">
+    <div class="info" *ngIf="tradeAmountActual">
       <p class="token-balance" [class.loading]="!expectedOutput">You will receive approximately {{expectedOutput}} <span
-          *ngIf="expectedOutput">ETH</span></p>
+          *ngIf="expectedOutput">ETH (~{{cost}} ETH fee)</span></p>
+    </div>
+
+    <div style="display: flex; flex-direction: row-reverse;">
+      <button mat-flat-button color="primary" (click)="sign()">Sign & Send</button>
     </div>
 
   </form>
