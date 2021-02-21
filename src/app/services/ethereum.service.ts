@@ -3,8 +3,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Contract, ethers } from "ethers";
 import { BehaviorSubject } from 'rxjs';
 import { erc20abi } from './abis';
-import { TokenInfo } from './token-list.service';
+import { TokenInfo, TokenListService } from './token-list.service';
 import axios from 'axios';
+import { environment } from 'src/environments/environment';
+
 
 declare global {
   interface Window { ethereum: any; }
@@ -27,7 +29,8 @@ export class EthereumService {
   network: ethers.providers.Network;
 
   constructor(
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private tokenService: TokenListService
   ) {
 
     this.initMetamask();
@@ -120,61 +123,16 @@ export class EthereumService {
 
     const nonce = await token.nonces(this.address).then(nonce => nonce.toHexString());
 
-    const EIP712Domain = [
-      { name: 'name', type: 'string' },
-     // { name: 'version', type: 'string' },
-      { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' }
-    ]
+    const deadline = Math.round((new Date().getTime() / 1000) + 86400);
+    console.log(deadline);
 
-    const domain = {
-      name: 'Uniswap',
-      // version: '1',
-      chainId: 4,
-      verifyingContract: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
-    }
+    const data = this.tokenService.getTypedData(_token, amount, this.address, environment.agentContract, nonce, deadline);
 
-    const Permit = [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint256' },
-      { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' }
-    ]
-
-    const message = {
-      owner: "0x0Cc7090D567f902F50cB5621a7d6A59874364bA1",
-      spender: "0x215A5a84df05120132bac290BCaB929e53d67FB4",
-      value: amount,
-      nonce,
-      deadline: Math.round((new Date().getTime() / 1000) + 86400)
-    }
-
-    console.log(message.deadline);
-
-    const data = JSON.stringify({
-      domain,
-      primaryType: 'Permit',
-      types: {
-        EIP712Domain: _token.EIP712Domain,
-        Permit: _token.Permit
-      },
-      message
-    });
-
-    console.log({
-      domain,
-      primaryType: 'Permit',
-      types: {
-        EIP712Domain,
-        Permit
-      },
-      message
-    })
+    console.log(data)
 
     // Directly call the JSON RPC interface, since ethers does not support signTypedDataV4 yet
     // See https://github.com/ethers-io/ethers.js/issues/830
-    const signature = await this.provider.send('eth_signTypedData_v4', [this.address, data]);
+    const signature = await this.provider.send('eth_signTypedData_v4', [this.address, data]).catch(console.log);
 
     const splitSignature = ethers.utils.splitSignature(signature);
 

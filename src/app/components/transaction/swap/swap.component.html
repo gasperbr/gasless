@@ -28,7 +28,8 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Trade amount</mat-label>
-      <input matInput [(ngModel)]="tradeAmount" name="tradeAmount" (ngModelChange)="amountChange($event)"
+      <input pattern="^[0-9]*[.,]?[0-9]*$" matInput [(ngModel)]="tradeAmount" name="tradeAmount"
+        (ngModelChange)="amountChange($event)"
         placeholder="0.0">
     </mat-form-field>
     <p style="color: #ffcc80" *ngIf="!tradeAmountValid">Please enter a valid number.</p>

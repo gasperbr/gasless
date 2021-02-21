@@ -14,8 +14,8 @@ export class TokenListService {
       permitVersion: 1,
       decimals: 18,
       Permit: [{ name: 'holder', type: 'address' }, { name: 'spender', type: 'address' }, { name: 'nonce', type: 'uint256' }, { name: 'expiry', type: 'uint256' }, { name: 'allowed', type: 'bool' }],
-      EIP712Domain: [{ name: 'name', type: 'string' }, { name: 'version', type: 'unit256' }, { name: 'chainId', type: 'uint256' }, { name: 'verifyingContract', type: 'address' }],
-      domain: { name: 'Dai Stablecoin', version: 1, chainId: 4, verifyingContract: "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735" },
+      EIP712Domain: [{ name: 'name', type: 'string' }, { name: 'version', type: 'string' }, { name: 'chainId', type: 'uint256' }, { name: 'verifyingContract', type: 'address' }],
+      domain: { name: 'Dai Stablecoin', version: "1", chainId: 4, verifyingContract: "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735" },
     },
     {
       icon: "https://tokens.1inch.exchange/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
@@ -40,6 +40,54 @@ export class TokenListService {
     return this.rinkebyTokens;
   }
 
+  getTypedData(token: TokenInfo, amount, owner, spender, nonce, deadline) {
+    let message;
+    if (token.permitVersion === 0) {
+      message = {
+        owner,
+        spender,
+        value: amount,
+        nonce,
+        deadline
+      }
+    } else {
+      /* const typedData = JSON.stringify({
+        types: {
+          EIP712Domain: [{ name: "name", type: "string", }, { name: "version", type: "string", }, { name: "chainId", type: "uint256", }, { name: "verifyingContract", type: "address", },],
+          Permit: [{ name: "holder", type: "address", }, { name: "spender", type: "address", }, { name: "nonce", type: "uint256", }, { name: "expiry", type: "uint256", }, { name: "allowed", type: "bool", },],
+        },
+        primaryType: "Permit",
+        domain: {
+          name: "Dai Stablecoin",
+          version: "1",
+          chainId: 42,
+          verifyingContract: "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
+        },
+        message: message,
+      });
+      */
+      message = {
+        holder: owner,
+        spender,
+        nonce,
+        expiry: deadline,
+        allowed: true
+      }
+    }
+
+    const data = {
+      domain: token.domain,
+      primaryType: 'Permit',
+      types: {
+        EIP712Domain: token.EIP712Domain,
+        Permit: token.Permit
+      },
+      message: message
+    };
+
+    return JSON.stringify(data)
+  }
+
 }
 
 export interface TokenInfo {
@@ -51,5 +99,5 @@ export interface TokenInfo {
   decimals: number,
   EIP712Domain: { name: string, type: string }[],
   domain: { [key: string]: any },
-  Permit: { name: string, type: string }[]
+  Permit: { name: string, type: string }[],
 }
