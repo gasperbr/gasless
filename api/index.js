@@ -3,10 +3,10 @@ const axios = require('axios')
 const app = require('express')()
 const fs = require("fs");
 const { ethers } = require("ethers");
-const { abi } = JSON.parse(fs.readFileSync("Agent.json"));
 const bodyParser = require('body-parser')
 const { ChainId, Token, Fetcher, Trade, Route, TokenAmount, TradeType, WETH } = require('@uniswap/sdk')
 const BigInteger = require('jsbn').BigInteger
+const { abi } = JSON.parse(fs.readFileSync("./Agent.json"));
 
 // api-rinkeby.etherscan.io returns the same gas estimation as api.etherscan.io
 const gasPriceUrl = `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env.ETHERSCAN_API_KEY}`
