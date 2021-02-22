@@ -162,7 +162,7 @@ export class EthereumService {
     for (let i = 0; i < statusResponse.length; i++) {
       const hashes = statusResponse[i];
       const receipt = await this.itx.getTransactionReceipt(hashes["ethTxHash"]);
-      if (receipt && receipt.confirmations && receipt.confirmations > 1) {
+      if (receipt && receipt.confirmations && receipt.confirmations >= 1) {
         response.mined = true;
         response.minedTx = receipt.transactionHash;
       }
