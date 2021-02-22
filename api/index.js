@@ -48,6 +48,7 @@ async function calcualteGasCost() {
 async function getEstimate(address, amount, decimals) {
   const ethOutput = await getTradeOutput(address, amount, decimals)
   const gasCost = await calcualteGasCost()
+  console.log('ethOutput: ', ethOutput, ' gas estimate: ', gasCost)
   if (ethOutput === -1 || gasCost === -1) return "Could not calculate estimate."
   return {
     gasCost: gasCost.toString(10),
@@ -100,8 +101,8 @@ async function relayCall(token, owner, receiver, permitVersion, amount, nonce, d
   // Create the transaction relay request
   const tx = {
     to: process.env.AGENT_CONTRACT,
-    data: iface.encodeFunctionData("executeTransaction", [token, owner, receiver, permitVersion, amount, nonce, deadline, v, r, s, "false"]),
-    gas: "250000",
+    data: iface.encodeFunctionData("executeTransaction", [token, owner, receiver, permitVersion, amount, nonce, deadline, v, r, s, false]),
+    gas: "300000",
   };
 
   const relayTransactionHashToSign = ethers.utils.keccak256(
