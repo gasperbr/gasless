@@ -19,7 +19,7 @@ async function main() {
     // Address of the ITX deposit contract
     to: "0x015C7C7A7D65bbdb117C573007219107BD7486f9",
     // The amount of ether you want to deposit in your ITX gas tank
-    value: ethers.utils.parseUnits("0.1", "ether"),
+    value: ethers.utils.parseUnits("0.2", "ether"),
   });
   console.log("Mining deposit transaction...");
   console.log(

@@ -36,8 +36,13 @@ img {
 
 .token-balance {
   margin-bottom: 0;
-  &.loading:after {
-    content: ' .';
-    animation: dots 1s steps(5, end) infinite;
-  }
+}
+
+.loading:after {
+  content: ' .';
+  animation: dots 1s steps(5, end) infinite;
+}
+
+p {
+  overflow-wrap: break-word;
 }

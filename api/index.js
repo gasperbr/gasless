@@ -1,6 +1,10 @@
 require('dotenv').config()
 const axios = require('axios')
 const app = require('express')()
+const fs = require("fs");
+const { ethers } = require("ethers");
+const { abi } = JSON.parse(fs.readFileSync("Agent.json"));
+const bodyParser = require('body-parser')
 const { ChainId, Token, Fetcher, Trade, Route, TokenAmount, TradeType, WETH } = require('@uniswap/sdk')
 const BigInteger = require('jsbn').BigInteger
 
@@ -63,11 +67,58 @@ app.get('/api/estimate-output', async (req, res) => {
   res.end(JSON.stringify(estimate))
 })
 
-app.get('/api/item/:slug', (req, res) => {
-  const { slug } = req.params
-  res.end(`Item: ${slug}`)
+app.post('/api/execute-transaction', bodyParser.json(), async (req, res) => {
+  res.setHeader('Content-Type', 'text/html')
+  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate')
+
+  const { token, decimals, owner, receiver, permitVersion, amount, nonce, deadline, v, r, s } = req.body
+  const data = await getEstimate(token, amount, decimals)
+
+  if (typeof data !== 'object' || data.estimate[0] === '-') {
+    res.end(`Could not send request.`)
+  } else {
+    const tx = await relayCall(token, owner, receiver, permitVersion, amount, nonce, deadline, v, r, s)
+    res.end(tx);
+  }
 })
 
 module.exports = app
 
+async function relayCall(token, owner, receiver, permitVersion, amount, nonce, deadline, v, r, s) {
+  // Configure the connection to an Ethereum node
+  const itx = new ethers.providers.InfuraProvider(
+    process.env.ETHEREUM_NETWORK,
+    process.env.INFURA_PROJECT_ID
+  );
+  // Create a signing account from a private key
+  const signer = new ethers.Wallet(process.env.SIGNER_PRIVATE_KEY, itx);
+
+  // Create a contract interface
+  const iface = new ethers.utils.Interface(abi);
+
+  // Create the transaction relay request
+  const tx = {
+    to: process.env.AGENT_CONTRACT,
+    data: iface.encodeFunctionData("executeTransaction", [token, owner, receiver, permitVersion, amount, nonce, deadline, v, r, s, "false"]),
+    gas: "250000",
+  };
+
+  const relayTransactionHashToSign = ethers.utils.keccak256(
+    ethers.utils.defaultAbiCoder.encode(
+      ["address", "bytes", "uint", "uint"],
+      [tx.to, tx.data, tx.gas, 4]
+    )
+  );
+  const signature = await signer.signMessage(
+    ethers.utils.arrayify(relayTransactionHashToSign)
+  );
+
+  // Relay the transaction through ITX
+  const relayTransactionHash = await itx.send("relay_sendTransaction", [
+    tx,
+    signature,
+  ]);
+
+  return relayTransactionHash
+}
 

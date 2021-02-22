@@ -28,7 +28,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Trade amount</mat-label>
-      <input pattern="^[0-9]*[.,]?[0-9]*$" matInput [(ngModel)]="tradeAmount" name="tradeAmount"
+      <input autocomplete="off" pattern="^[0-9]*[.,]?[0-9]*$" matInput [(ngModel)]="tradeAmount" name="tradeAmount"
         (ngModelChange)="amountChange($event)"
         placeholder="0.0">
     </mat-form-field>
@@ -41,8 +41,15 @@
     </div>
 
     <div style="display: flex; flex-direction: row-reverse;">
-      <button mat-flat-button color="primary" (click)="sign()">Sign & Send</button>
+      <button mat-flat-button color="primary" (click)="sign()" [disabled]="sending || mining">Sign & Send</button>
     </div>
-
+    <br>
+    <br>
+    <p *ngIf="sending || mining" [class.loading]="sending || mining">Sending transaction(s)</p>
+    <a style="color: white" target="_blank" *ngFor="let tx of allTx; let i = index" href="{{allTx[i]}}">{{allTx[i]}}</a>
+    <p *ngIf="minedTx" style="text-align: center;">
+      Transaction mined successfully!
+      <a style="color: #90caf9" target="_blank" *ngIf="minedTx" href="{{minedTx}}">{{minedTx}}</a>
+    </p>
   </form>
 </div>

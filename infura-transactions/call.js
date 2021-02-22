@@ -3,7 +3,7 @@ const { ethers, providers } = require("ethers");
 // Loading the contract ABI
 // (the results of a previous compilation step)
 const fs = require("fs");
-const { abi } = JSON.parse(fs.readFileSync("Demo.json"));
+const { abi } = JSON.parse(fs.readFileSync("Agent.json"));
 
 const bump = [];
 
@@ -27,6 +27,7 @@ function getChainID() {
       throw new Error("You need to set ETHEREUM_NETWORK in your .env file.");
   }
 }
+
 function printBump(txHash, price) {
   if (!bump[txHash]) {
     bump[txHash] = true;
@@ -66,11 +67,11 @@ async function main() {
   // Create the transaction relay request
   const tx = {
     // Address of the contract we want to call
-    to: process.env.DEMO_CONTRACT,
+    to: process.env.AGENT_CONTRACT,
     // Encoded data payload representing the contract method call
-    data: iface.encodeFunctionData("echo", [`Hello world at ${Date.now()}!`]),
+    data: iface.encodeFunctionData("executeTransaction", ['0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', '0x0Cc7090D567f902F50cB5621a7d6A59874364bA1', '0x0Cc7090D567f902F50cB5621a7d6A59874364bA1', "0", "1289536931817640864", "3", "1614035041", "27", "0x218d1961569c719ef1ce15b4bdb7d14e016c7ef83fe4914281ee5c079e93891d", "0x4de6bb75ed196d10df2dc8e82611ef1d1e1a0a5bda66b6804fb6f2f19008fbe9", "false"]),
     // An upper limit on the gas we're willing to spend
-    gas: "50000",
+    gas: "250000",
   };
 
   // Sign a relay request using the signer's private key

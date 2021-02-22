@@ -20,6 +20,10 @@ export class SwapComponent implements OnInit {
   balance: string;
   expectedOutput: string;
   cost: string;
+  sending = false;
+  mining = false;
+  allTx: string[];
+  minedTx: string = "";
 
   constructor(
     private tokenListService: TokenListService,
@@ -76,6 +80,7 @@ export class SwapComponent implements OnInit {
 
   async getEth(amount: string) {
     const data = await this.ethereumService.calculateTradeOutput(this.token, amount);
+    if (!data) return;
     if (typeof data === 'string') {
       this.snackBar.open(data, 'OK');
     } else {
@@ -108,9 +113,33 @@ export class SwapComponent implements OnInit {
     return num.slice(0, i + 7)
   }
 
-  sign() {
-    if (this.tradeAmountValid && this.token && this.tradeAmount) {
-      this.ethereumService.sendTx(this.token, this.tradeAmountActual);
+  async sign() {
+    if (this.tradeAmountValid && this.token && this.tradeAmount && !this.sending && !this.mining) {
+      this.minedTx = "";
+      const _token = this.token;
+
+      const data = await this.ethereumService.signTx(_token, this.tradeAmountActual);
+      this.sending = true;
+
+      const itxTx = await this.ethereumService.sendTx(_token, data);
+      this.sending = false;
+
+      if (!itxTx) return;
+      this.mining = true;
+
+      while (true) {
+        const response = await this.ethereumService.getTxStatus(itxTx);
+        console.log(response);
+        if (response.mined) {
+          this.minedTx = `https://rinkeby.etherscan.io/tx/${response.minedTx}`
+          this.allTx = [];
+          this.mining = false;
+          return;
+        } else {
+          this.allTx = response.allTx.map(data => `https://rinkeby.etherscan.io/tx/${data["ethTxHash"]}`);
+        }
+        await (new Promise((resolve) => setTimeout(resolve, 1000)));
+      }
     }
   }
 
